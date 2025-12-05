@@ -6,18 +6,14 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from imblearn.over_sampling import SMOTE
 import mlflow
 import mlflow.sklearn
-import pickle
 import os
 from datetime import datetime
 
 def load_data():
     """Load and prepare credit card fraud data"""
-    # For demo purposes - using synthetic data structure
-    # In real scenario, download from Kaggle: creditcardfraud dataset
+
     print("Loading data...")
-    
-    # Using a sample for demonstration
-    # Replace this with: df = pd.read_csv('../data/credit_card_data.csv')
+
     df = pd.read_csv('/app/data/creditcard.csv')
     
     return df
@@ -52,8 +48,8 @@ def train_model(X_train, y_train, X_test, y_test):
         
         # Log parameters
         params = {
-            'n_estimators': 50,
-            'max_depth': 10,
+            'n_estimators': 300,
+            'max_depth': 5,
             'min_samples_split': 5,
             'random_state': 42
         }
@@ -82,15 +78,9 @@ def train_model(X_train, y_train, X_test, y_test):
         # Log model
         mlflow.sklearn.log_model(model, "model")
         
-        # Save model locally
-        os.makedirs('../models', exist_ok=True)
-        model_path = f'../models/fraud_model_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl'
-        with open(model_path, 'wb') as f:
-            pickle.dump(model, f)
         
         print(f"Model trained successfully!")
         print(f"Metrics: {metrics}")
-        print(f"Model saved to: {model_path}")
         
         return model, metrics
 
